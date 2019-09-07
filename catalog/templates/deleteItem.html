@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Delete Item</h1>
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h3>Are you sure you want to delete?</h3>
+
+<form action="/catalog/{{items.item_name}}/delete" method="POST">
+<button type="text" name="delete" value="delete">Submit</button>
+</form>
+{% endblock %}

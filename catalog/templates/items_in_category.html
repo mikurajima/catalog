@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/clientOAuth" method="GET">
+<button name="login" value="login">LOGIN</button>
+</form>
+
+<h1>Categories</h1>
+{% for category in category_list %}
+<li><a href="/catalog/{{category.category_name}}/items">{{category.category_name}}</a></li>
+{% endfor %}
+
+<h1>{{category}} Items ({{num_items}} Items)</h1>
+{% for item in items %}
+<li><a href="/catalog/{{item.category_name}}/{{item.item_name}}">{{item.item_name}}</a></li>
+{% endfor %}
+
+{% endblock %}

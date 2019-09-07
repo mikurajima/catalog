@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h1>Edit Item</h1>
+<form action="/catalog/{{editedItem.item_name}}/edit" method="POST">
+
+<h2>Item Name</h2>
+<input type="text" name="item_name" value="{{editedItem.item_name}}" />
+<h2>Description</h2>
+<input type="text" name="description" value="{{editedItem.description}}" />
+
+<h2>Category</h2>
+<select id="category_name" name="category_name">
+<option value="{{category.category_name}}" selected>{{category.category_name}}</option>
+{% for list in category_list %}
+<option value="{{list.category_name}}">{{list.category_name}}</option>
+{% endfor %}
+</select>
+
+<input type="submit" name="buttonName" value="submit">
+
+<h6>
+<input name="item_id" value="{{editedItem.id}}" />
+</h6>
+</form>
+
+{% endblock %}

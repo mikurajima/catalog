@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h1>Categories</h1>
+{% for category in category_list %}
+<li><a href="/catalog/{{category.category_name}}/items">{{category.category_name}}</a></li>
+{% endfor %}
+
+<h1>{{category}} Items ({{num_items}} Items)</h1>
+{% for item in items %}
+<li><a href="/catalog/{{item.category_name}}/{{item.Items.item_name}}">{{item.Items.item_name}}</a></li>
+{% endfor %}
+
+{% endblock %}

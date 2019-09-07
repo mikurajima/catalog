@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<form action="/clientOAuth" method="GET">
+<button name="login" value="login">LOGIN</button>
+</form>
+<h1>You are successfully logged out</h1>
+<a href ="http://localhost:5000/">Go back to the top page</a>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/clientOAuth" method="GET">
+<button name="login" value="login">LOGIN</button>
+</form>
+
+<h1>{{items.item_name}}</h1>
+
+<h3>Description:
+{{items.description}}
+</h3>
+
+{#if文を設置予定#}
+{#if user log in, shows below. otherwise hide them #}
+{#
+<form action="/catalog/{{items.item_name}}/edit" method="GET">
+<button type="text" name="edit" value="edit">Edit</button>
+</form>
+#}
+{#it is not working when i remove the last / from the url below#}
+{#
+<form action="/catalog/{{items.item_name}}/delete" method="GET">
+<button type="text" name="delete" value="delete">Delete</button>
+</form>
+#}
+
+{% endblock %}

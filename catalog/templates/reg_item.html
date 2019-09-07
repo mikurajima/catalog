@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h1>Register New Item</h1>
+<h2 font color="red">{{error_msg}}</h2>
+<h3>Please enter new item</h3>
+<h4>caution: You cannot register the item that already exists</h4>
+<form action="/item/new" method="POST">
+<input type="text" name="item_name" value="place new item here" />
+<input type="text" name="description" value="place item's description here" />
+<h3>Please select categories</h3>
+<select name="category">
+{% for category_name in category_names %}
+<option value="{{category_name.category_name}}">{{category_name.category_name}}</option>
+{% endfor %}
+</select>
+<input type="submit" name="buttonName" value="submit">
+</form>
+{% endblock %}
