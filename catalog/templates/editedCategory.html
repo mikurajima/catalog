@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h1>
+Changed the Category Name<br>
+From {{old}} to {{new}}
+</h1>
+<div class="">
+<a href ="{{url_for('newCategory')}}">add new category</a>
+<div>
+Current list of category
+{% for cg in category %}
+<li><a href="/catalog/{{cg.category_name}}/items">{{cg.category_name}}</a></li>
+{% endfor %}
+<br>
+<br>
+<h1>Items belog to {{new}}</h1>
+{% for item in items %}
+<li><a href="/catalog/{{new}}/{{item.item_name}}">{{item.item_name}}</a></li>
+{% endfor %}
+<br>
+
+
+
+{% endblock %}

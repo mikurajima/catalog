@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h1>Deleting the Category Name</h1>
+<div class="">
+<a href ="{{url_for('newCategory')}}">add new category</a>
+<div>
+<br>
+<h2>
+{{error_msg}}
+</h2>
+Which category would you like to delete?<br>
+Please select the category name.<br>
+<form action="/category/delete" method="POST">
+<select id="category_name" name="delete_category_name">
+{% for cg_name in cg_names %}
+<option value="{{cg_name.category_name}}">{{cg_name.category_name}}</option>
+{% endfor %}
+</select>
+<input type="submit" name="delete_category_name" value="Delete">
+</form>
+<br>
+*Please do not select the category that is being used for items.<br>
+<br>
+<br>
+<br>
+
+
+{% endblock %}

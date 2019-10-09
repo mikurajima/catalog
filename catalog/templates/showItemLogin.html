@@ -1,10 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<p>
 You are currently login.
 <form action="/gdisconnect" method="GET">
 <button name="logout" value="logout">LOGOUT</button>
 </form>
+</p>
 
 <h1>{{items.item_name}}</h1>
 
@@ -17,7 +19,6 @@ You are currently login.
 <form action="/catalog/{{items.item_name}}/edit" method="GET">
 <button type="text" name="edit" value="edit">Edit</button>
 </form>
-
 {#it is not working when i remove the last / from the url below#}
 <form action="/catalog/{{items.item_name}}/delete" method="GET">
 <button type="text" name="delete" value="delete">Delete</button>

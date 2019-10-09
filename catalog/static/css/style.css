@@ -1,0 +1,31 @@
+body {
+  /* background-color: powderblue;*/
+  background-color: white;
+}
+
+p {
+  color: red;
+}
+
+h1 {
+  padding: .5em .75em;
+  background: -webkit-linear-gradient(top, #69b4e6 0%, #3498db 100%);
+  background: linear-gradient(to bottom, #69b4e6 0%, #3498db 100%);
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
+}
+
+
+h3 {
+   color: blue;
+}
+
+.menu_category {
+   text-align: right;
+   color: red;
+}
+
+.menu_item {
+   text-align: right;
+   color: black;
+}

@@ -86,9 +86,9 @@ class Category(Base):
 
 dialect = "mysql"
 driver = "pymysql"
-username = "root"
-password = "shinsaku050"
-host = "localhost"
+username = "grader"
+password = "Shinsaku050$"
+host = "127.0.0.1"
 database = "udacity1"
 charset_type = "utf8"
 db_url = "{}+{}://{}:{}@{}/{}?charset={}".format(

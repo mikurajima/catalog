@@ -6,11 +6,18 @@ You are currently login.
 </form>
 
 <h1>Categories</h1>
+<div class="">
+<a href ="{{url_for('newCategory')}}">add new category</a>
+<div>
 {% for category in category_list %}
-<li><a href="/catalog/{{category.category_name}}/items">{{category.category_name}}</a></li>
+<li><a href="/catalog/{{category.category_name}}/items">{{category.category_name}}</a>
+  <a href = "/category/{{category.category_name}}/edit">edit</a>
+  <a href = "/category/delete">delete</a>
+</li>
 {% endfor %}
 
 <h1>{{category}} Items ({{num_items}} Items)</h1>
+<a href="{{url_for('newItem')}}">add new item</a>
 {% for item in items %}
 <li><a href="/catalog/{{item.category_name}}/{{item.Items.item_name}}">{{item.Items.item_name}}</a></li>
 {% endfor %}
