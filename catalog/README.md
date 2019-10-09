@@ -6,12 +6,48 @@ Place this folder at your vagrant holder.
 vagrant is not working where the holder name uses Chinese character (Kanji).  
 At windows, please turn off hypervisor auto start, otherwise vagrant is not working.
 ## Usage
-run `python3 application.py`
-access `localhost:5000/` to start
+access `52.195.9.148.xip.io/` to start
+port for ssh is `52.195.9.148:2200`
+## list of software
+mysql
+wgsi
+apache2
+python3
+
 ## Contributing
-[virtual box](https://download.virtualbox.org/virtualbox/6.0.10/VirtualBox-6.0.10-132072-Win.exe)
-[vagrant](https://www.vagrantup.com/downloads.html)
-[vagrant configuration file (fork from GitHub)](https://github.com/udacity/fullstack-nanodegree-vm)
+
+## SSH key location
+/home/grader/.ssh/grader
+
 ## Code Status
 Build
+
+## Notes to Reviewer
+MIIEpAIBAAKCAQEAxaUWvmi2q5Gj2xqrBGHu5ZEj3wqBxytd/sKePgobvDcB5omu
+C375KPZQHOpj5FTNYgQP/lDvQwV/5K9BdV04al+uyNnr3GJLUR3IOEyun7nJc/1h
+CqcT8RrAsDpJtrmDu6og+Pzbzwe4W0fpFvH0gvWOVrU7X0l08IVPiZPmuJRGniOC
+MH1Z6TzBcVDoQ5cjuYy0ToAilPUaH2cIMtK1EytxYXygToSgJg3Thig09+wZ0w8A
+fObd1WzrHGaIXWOjQz2BGdXcAk1pFKl77FoNc6fnaGVvLL4hnQqyDknz71H7xG/t
+dk4RdTyU5e+dBpVFcD1sT2HEHDDRsDff1klaHwIDAQABAoIBAB2/Y1T1Xckk+oyX
+zvWx58sVtVh0tGPN2y/lCvw7eUEy5k5UmqWQTuAjcptni/Fp8h+2jNGyTNDBmyZI
+WonXpg4cqKoCYsWg5cUnvmL6562SwQd8M4bu7slzRV1A6Kdf9LviN2RCarMWbmEO
+yb5yXGL5opraXD1TSQ6KghYq9KcDJodF1G3vNTBB21syZHNrC4D6paT6FyvLwxtV
+afNqVUAhDxBR9H7ndGIcRZmFfJld1rh3VBLm7XA/FVY9gSCRJ5ft/cFfYtk6lBiz
+kAzEo4kkTDV0eQPnrIM4W/0sKt3HqcewJdqujAX2qBE3q9iTmKEazRBx015MIYXo
+6X8DUUECgYEA4jq5IiI7Z8GdZXz7GV3dvw+ydF558j2r11PaciguhfZRP0+Y67z4
+maBMcSBZylvx221+qqdPkYntAtbfXzZ3+TM3xb+8C7RfneM0bpMO3HlHdwqhgFoH
+UE8qmMFn6xtjgYf1kSQIkSx/lSXpigzjhVznG5E40XTVnnsHBLTkAxUCgYEA36dn
+Ki73vkNC33TppTjJaID/qGHPD5ddovLGyoyAqcEgZLG7t3P2PlUnivEKrRQg3Abw
+I704nN/VTalSO647YzwZ7nGi8YIb9KH/hIQmbx14LUIiO9d4ui7QIeB/09VRu6eP
+z0V+AiO2MtQrhcjq0MVjpp1iXFS8KjocURAJxWMCgYBT1WsRqRnWgzsuhrgOWGh6
+CvkYgoIyMIRjkSFcOGO1JOhKy9ZhVW/SjkKFkXV0tcnUhKjx2Hp19mSsLrAr+mVP
+JZm/YCPxOnBMdAvUBg71yMOg64GZrMMVEaE5ZkJ6L3YaZCWuGWpLUfAddyUqEUim
+/RxvbMtfYypeRjz9k4MDWQKBgQDDqBprX91h+EunWwsPfIdOQhPmRXK0TBIhfEwG
+ZDYmy4pALPBwhCT20N4gAdD6KzK36eXpDh9ZtcNQBoGnLjxMCwcQfx8yMkWslJAJ
+aOaKrHg297UlLtIx5sQz7sdFFUhEZ0k65atfycgZ3V0Z0/QAob4Uw3iKF6LpOh8N
+l39EywKBgQDJXuGRxdcZa3LNO/hsvx/TxRkOvDZAJsw2AjjAw8w9W/gSd1RJ7VbO
+4XztKiWerhemBgMhvkHsaNK/WVjc+zMmQvRJooEFjel2zG5iZfJY09yP6wk3mVuK
+LPbkd6sgKD88TEA+/xzfWCCQuwigdtwAdfIll6qnfD0Qhrzs2gL6cw==
+
+
 ## License
