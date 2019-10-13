@@ -56,6 +56,7 @@ class Items(Base):
     category_id = Column(Integer)
     description = Column(String(700))
     registered_at = Column(String(30))
+    registered_user_id = Column(Integer)
 
     @property
     def serialize(self):
@@ -65,7 +66,8 @@ class Items(Base):
             # 'picture' : self.picture,
             'category_id': self.category_id,
             'description': self.description,
-            'registered_at': self.registered_at
+            'registered_at': self.registered_at,
+            'registered_user_id': self.registered_user_id
         }
 
 
@@ -74,6 +76,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     category_name = Column(String(30))
     registered_at = Column(String(30))
+    registered_user_id = Column(Integer)
 
     @property
     def serialize(self):
@@ -81,13 +84,15 @@ class Category(Base):
         return {
             'id': self.id,
             'category_name': self.category_name,
+            'registered_at': self.registered_at,
+            'registered_user_id': self.registered_user_id
         }
 
 
 dialect = "mysql"
 driver = "pymysql"
 username = "grader"
-password = "Shinsaku050$"
+password = "Shinskau050$"
 host = "127.0.0.1"
 database = "udacity1"
 charset_type = "utf8"

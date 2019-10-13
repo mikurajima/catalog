@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+You are currently login.
+<form action="/gdisconnect" method="GET">
+<button name="logout" value="logout">LOGOUT</button>
+</form>
+
+<h1>Edit Item</h1>
+<p>{{error_msg}}</p>
+
+{% endblock %}

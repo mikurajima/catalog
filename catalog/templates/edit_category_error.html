@@ -5,16 +5,17 @@ You are currently login.
 <button name="logout" value="logout">LOGOUT</button>
 </form>
 
-<h1>Deleted the Category "{{deleted_cg}}"</h1>
+<h1>Changing the Category Name</h1>
 <div class="">
 <a href ="{{url_for('newCategory')}}">add new category</a>
 <div>
+<p>{{error_msg}}</p>
 <br>
-Category name "{{deleted_cg}} has been deleted"<br>
 <br>
-Current category lists are here<br>
-{% for cg_name in cg_names %}
-<li><a href="/catalog/{{cg_name.category_name}}/items">{{cg_name.category_name}}</a></li>
+<br>
+for your refrence, they are the list of registered categories.<br>
+{% for cg in category %}
+<li><a href="/category/{{cg.category_name}}/edit">{{cg.category_name}}</a></li>
 {% endfor %}
 
 {% endblock %}

@@ -18,7 +18,7 @@ from sqlalchemy import create_engine, asc, desc
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 from flask import flash
 app = Flask(__name__)
-app.secret_key = 'hogehoge'
+
 
 auth = HTTPBasicAuth()
 
@@ -67,7 +67,7 @@ def getUserID(email):
 
 # JSON APIs to view Restaurant Information
 @app.route('/catalog/JSON')
-def catelogJSON():
+def catalog_all_JSON():
     flash("JSON")
     categories = session.query(Category).all()
     all_json_data = []
@@ -82,6 +82,28 @@ def catelogJSON():
     final_json_data = {}
     final_json_data["category"] = all_json_data
     return jsonify(final_json_data)
+
+
+# Show JSON data
+@app.route('/catalog/<string:category_name>/<string:item_name>/JSON')
+def catalog_item_JSON(category_name, item_name):
+    items = session.query(Items).filter(Items.item_name == item_name).all()
+    if items == None:
+        # check category does exist in db
+        flash('The item "{} does not exist'.format(item_name))
+        return redirect(url_for('showTop'))
+    category = session.query(
+        Category).filter(Category.category_name == category_name).all()
+    if category == None:
+        # check category does exist in db
+        flash('The item "{} does not exist'.format(category_name))
+        return redirect(url_for('showTop'))
+    else:
+        # when category name and item does exist in db
+        itemJson = [item.serialize for item in items]
+        print("###############################################################")
+        print(itemJson)
+        return jsonify(itemJson)
 
 
 # Show top page
@@ -119,27 +141,38 @@ def items(category):
         session.commit()
         return redirect(url_for('showTop'))
     else:
-        category_list = session.query(Category.category_name).all()
-        category = session.query(Category.id, Category.category_name).filter(
+        category_list = session.query(
+            Category.category_name).order_by(asc(Category.category_name)).all()
+        category = session.query(
+            Category.id, Category.category_name).filter(
             Category.category_name == category).first()
-        items = session.query(Items, Category.category_name).join(
+        itemsJoin = session.query(
+            Items, Category.category_name).join(
             Items, Items.category_id == Category.id).filter(
                 Items.category_id == category.id).all()
-        num_items = session.query(Items.item_name).filter(
+        print(itemsJoin)
+        print(type(itemsJoin))
+        num_items = session.query(
+            Items.item_name).filter(
             Items.category_id == category.id).count()
+        items = session.query(
+            Items).filter(Items.category_id == category.id).all()
         if 'username' not in login_session:
             print('you are not login')
             return render_template(
-                'items_in_category.html', items=items,
+                'items_in_category.html',
+                items=items,
                 category_list=category_list,
-                category=category.category_name, num_items=num_items)
+                category=category.category_name,
+                num_items=num_items)
         else:
             print('you are login')
             return render_template(
                 'items_in_categoryLogin.html',
                 items=items,
                 category_list=category_list,
-                category=category.category_name, num_items=num_items)
+                category=category.category_name,
+                num_items=num_items)
 
 
 # Create a new categories
@@ -156,7 +189,7 @@ def newCategory():
             asc(Category.category_name)).all()
         # after enter category name that user wants to newly register
         if request.form['category_name']:
-        #if category name is not empty
+            # if category name is not empty
             category_name_canditate = request.form['category_name']
 
             same_category_name = session.query(Category.category_name).filter(
@@ -164,9 +197,8 @@ def newCategory():
             print(type(same_category_name))
 
             if same_category_name is not None:
-            # if same_category_name != NONE:
-            # if newly registering category name is already in db.
-                print('###########################################################')
+                # if same_category_name != NONE:
+                # if newly registering category name is already in db.
                 error_msg = "{} is already registred".format(
                     category_name_canditate)
                 print(error_msg)
@@ -181,16 +213,26 @@ def newCategory():
         # ここから下の行を試しに、インデント１つ左に動かしてみる。
         # if the newly registering category name does not exit in db.
             else:
+                user = session.query(
+                    User.id).filter(
+                    User.username == login_session['username']).first()
+                # get user id
+                if user == None:
+                    return redirect(url_for('showItem'))
+                # check the user has id in db
+                print('#######################################################')
+                print(user.id)
                 newItem = Category(
                     category_name=request.form[
-                    'category_name'], registered_at=str(datetime.now()))
+                        'category_name'], registered_at=str(
+                        datetime.now()), registered_user_id=user.id)
                 session.add(newItem)
                 flash('New Item {} Successfully Created'.format(
                     newItem.category_name))
                 session.commit()
                 return redirect(url_for('newCategory'))
         else:
-        #if category_name is empty
+            # if category_name is empty
             error_msg = 'You have entered nothing. \
                 Please enter category name that you would like to register'
             return render_template(
@@ -207,24 +249,31 @@ def newCategory():
             'reg_category.html', category_names=category_names)
 
 
-
 # @app.route('/catalog/<string:category>/delete', methods=['GET', 'POST'])
 @app.route('/category/delete', methods=['GET', 'POST'])
 def deleteCategory():
-# delete category
-# if there are no items using the category name, then delete
-# if there are some items using the cateory name, then raise caution
+    # delete category
+    # if there are no items using the category name, then delete
+    # if there are some items using the cateory name, then raise caution
     if 'username' not in login_session:
         print('you are not login')
         return redirect(url_for('showTop'))
     else:
         print('you are logged in')
     if request.method == 'POST':
-    # delete the category
-        #check if the deleting category is being used.
+        # delete the category
+        # check if the deleting category is being used.
+        user = session.query(
+            User.id).filter(
+            User.username == login_session['username']).first()
+        print(user.id)
+        print('77777777777777777777777777777777777777777777777777777777777')
+        if user == None:
+            flash("you are not allowed to delete category")
+            return redirect(url_for('showTop'))
         category = session.query(Category.id).filter(
             Category.category_name == request.form[
-            'delete_category_name']).first()
+                'delete_category_name']).first()
         items = session.query(
             Items).filter(Items.category_id == category.id).all()
         cg_names = session.query(Category.category_name).all()
@@ -237,91 +286,116 @@ def deleteCategory():
             category = session.query(Category.category_name).all()
             return render_template(
                 'bef_delete_category.html',
-                error_msg = error_msg,
-                cg_names = cg_names)
+                error_msg=error_msg,
+                cg_names=cg_names)
         else:
-        #if the deleting category is not being used.
-            session.query(Category).filter(
+            # if the deleting category is not being used.
+            author_check = session.query(Category).filter(
                 Category.category_name == request.form[
-                'delete_category_name']).delete()
-            cg_names = session.query(
-                Category).order_by(Category.category_name).all()
-            return render_template(
-                'aft_delete_category.html',
-                cg_names = cg_names,
-                deleted_cg = request.form['delete_category_name'])
+                    'delete_category_name'],
+                    Category.registered_user_id == user.id).first()
+            if author_check:
+                session.query(Category).filter(
+                    Category.category_name == request.form[
+                        'delete_category_name'],
+                         Category.registered_user_id == user.id).delete()
+                cg_names = session.query(
+                    Category).order_by(Category.category_name).all()
+                return render_template(
+                    'aft_delete_category.html',
+                    cg_names=cg_names,
+                    deleted_cg=request.form['delete_category_name'])
+            else:
+                error_msg = 'The category name "{}" you want to delete \n \
+                    is not owned by you. \
+                    So you are not authorized to delete it.\n \
+                    '.format(request.form['delete_category_name'])
+                print(error_msg)
+                print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+                category = session.query(Category.category_name).all()
+                return render_template(
+                    'bef_delete_category.html',
+                    error_msg=error_msg,
+                    cg_names=cg_names)
     else:
-    # if request.method == 'GET'
+        # if request.method == 'GET'
         category = session.query(Category.category_name).all()
         return render_template(
             'bef_delete_category.html',
-            cg_names = category)
-
+            cg_names=category)
 
 
 @app.route('/category/<string:category>/edit', methods=['GET', 'POST'])
 def editCategory(category):
-# change category name
+    # change category name
     if 'username' not in login_session:
+        # check the user is log in
         print('you are not login')
         return redirect(url_for('showTop'))
-    else:
-        print('you are logged in')
-        entered_category_name = category
+    # procceed if user is log in
+    print('you are logged in')
+    entered_category_name = category
     if request.method == 'POST':
-        print('request accepted')
-        # check the entered category name does exist
-        categoryNew = session.query(
-            Category).filter(
-            Category.category_name == request.form['new_category_name']).first()
-        if categoryNew:
-        # if the entered category name does exist,
-            if entered_category_name == request.form['new_category_name']:
-            # if the entered category name is the same as it is.
-                category = sesion.query(
-                    Category.category_name).order_by(
-                    Category.category_name).all()
-                return render_template(
-                    'edit_category.html',
-                    category = category,
-                    category_name = entered_category_name)
-            else:
-            # delete old category name
-            # change all category id which goes with ald one
-                categoryOld = session.query(
-                    Category).filter(
-                    Category.category_name == entered_category_name).first()
-                # 変更前のカテゴリ名に該当する、カテゴリインスタンス作成
-                items = session.query(Items).filter(
-                    Items.category_id == categoryOld.id).all()
-                print(type(items))
-                print(items)
-                print('#######################################################')
-                items[0].category_id = categoryNew.id
-                print(items[0].category_id)
-                session.commit()
-                # replacing category id by new one in Items table
-                session.query(
-                    Category).filter(
-                    Category.id == categoryOld.id).delete()
-                # delete old categry id in Category table
-                categoryList = session.query(Category.category_name).all()
-                return render_template(
-                    'editedCategory.html',
-                    category = categoryList,
-                    old = entered_category_name,
-                    new = request.form['new_category_name'],
-                    items = items)
-        else:
-        # if the entered category name is new,
+        # check if the user is the owner of the category name he want to change
+        ########################################################################
+        user = session.query(
+            User.id).filter(
+            User.username == login_session['username']).first()
+        print(user.id)
+        print('6666666666666666666666666666666666666666666666666666666')
+        author_check_cg = session.query(Category).filter(
+            Category.category_name == entered_category_name,
+            Category.registered_user_id == user.id).first()
+        print(type(author_check_cg))
+        print(author_check_cg)
+        if author_check_cg == None:
+            # if the user is not the owner of the category name
+            category = session.query(Category).order_by(
+                asc(Category.category_name)).all()
+            error_msg = 'Your are not owner of the category name "{}",\
+                so you are not allowed to edit it.'.format(
+                entered_category_name)
+            return render_template(
+                'edit_category_error.html',
+                category=category,
+                error_msg=error_msg)
+
+        if entered_category_name == request.form['new_category_name']:
+            # new and old category name is the same
+            # set the error message and return
+            category = session.query(Category).order_by(
+                asc(Category.category_name)).all()
+            error_msg = 'The category name "{}",\
+                is the same as you currently have.'.format(
+                entered_category_name)
+            return render_template(
+                'edit_category_error.html',
+                category=category,
+                error_msg=error_msg)
+
+        categoryNew = session.query(Category).filter(
+            Category.category_name == request.form[
+                'new_category_name']).first()
+        print(type(categoryNew))
+        print(categoryNew)
+
+        if categoryNew == None:
+            # if the entered category name is new,
+            # simply change category name in Category table
             category = session.query(
                 Category).filter(
-                Category.category_name == entered_category_name).all()
+                Category.category_name == entered_category_name,
+                Category.registered_user_id == user.id).one()
+            # take out this user's registered
+            # category name which is target to be edited.
+
             print(entered_category_name)
             print(request.form['new_category_name'])
             print(type(category))
             print(category)
-            category[0].category_name = request.form['new_category_name']
+            print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+
+            category.category_name = request.form['new_category_name']
             session.commit()
             categoryList = session.query(Category.category_name).all()
             print(type(categoryList))
@@ -329,7 +403,7 @@ def editCategory(category):
             categoryID = session.query(
                 Category.id).filter(
                 Category.category_name == request.form[
-                'new_category_name']).one()
+                    'new_category_name']).one()
             print(categoryID)
             print(type(categoryID))
             items = session.query(
@@ -340,10 +414,74 @@ def editCategory(category):
             print(type(items))
             return render_template(
                 'editedCategory.html',
-                category = categoryList,
-                old = entered_category_name,
-                new = request.form['new_category_name'],
-                items = items)
+                category=categoryList,
+                old=entered_category_name,
+                new=request.form['new_category_name'],
+                items=items)
+        else:
+            # if the entered category name does exist,
+            # this means we need two tasks to complete
+            # first task is to change category id
+            # 1. find out the category id of entered category name
+            # 2. find out the category id of old category name
+            # 3. find out all items that using old category id
+            # 4. change old category id to new on the item table
+            # 5. delete old category row on the category table
+            categoryOld = session.query(
+                Category).filter(
+                Category.category_name == entered_category_name,
+                Category.registered_user_id == user.id).first()
+
+            categoryNew = session.query(
+                Category).filter(
+                Category.category_name == request.form[
+                    'new_category_name']).first()
+            # this program does not care the author of category
+            # that is targeted to be integrated.
+
+            items = session.query(Items).filter(
+                Items.category_id == categoryOld.id).all()
+
+            """
+            items = session.query(Items).filter(
+                Items.category_id == categoryOld.id,
+                Items.registered_user_id == user.id).all()
+            """
+            # set here to allow change category id,
+            # although the item author is different.
+            # if auther did not like, he can change it later. that is my idea.
+
+            print(type(categoryOld))
+            print(categoryOld)
+            print(type(categoryNew))
+            print(categoryNew)
+            print(type(items))
+            print(items)
+            print('#######################################################')
+
+            if items != []:
+                # update if we have items
+                # that cagegory name is entered_category_name
+                items[0].category_id = categoryNew.id
+                print(items[0].category_id)
+                session.commit()
+                # replacing category id by new one in Items table
+
+            session.query(Category).filter(
+                Category.id == categoryOld.id).delete()
+            session.commit()
+            # delete old categry id in Category table
+
+            categoryList = session.query(
+                Category.category_name).all()
+
+            return render_template(
+                'editedCategory.html',
+                category=categoryList,
+                old=entered_category_name,
+                new=request.form['new_category_name'],
+                items=items)
+
     if request.method == 'GET':
         category = session.query(Category).order_by(
             asc(Category.category_name)).all()
@@ -352,9 +490,8 @@ def editCategory(category):
             print(category)
         return render_template(
             'edit_category.html',
-            category = category,
-            category_name = entered_category_name)
-
+            category=category,
+            category_name=entered_category_name)
 
 
 # Create a new items
@@ -364,16 +501,28 @@ def newItem():
     if 'username' not in login_session:
         print('you are not login')
         return redirect(url_for('showTop'))
-    else:
-        print('you are logged in')
     if request.method == 'POST':
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        print(request.form['item_name'])
+        print(type(request.form['item_name']))
+        if request.form['item_name'] == '':
+            flash('no item name is entered')
+            return redirect(url_for('newItem'))
+        if request.form['description'] == '':
+            flash('no description is written')
+            return redirect(url_for('newItem'))
         category_name = request.form['category']
         item_name = request.form['item_name']
         description = request.form['description']
+        user = session.query(
+            User).filter(User.username == login_session['username']).first()
         category = session.query(Category.id).filter(
             Category.category_name == category_name).first()
         newItem = Items(item_name=item_name, registered_at=str(
-            datetime.now()), category_id=category.id, description=description)
+            datetime.now()),
+            category_id=category.id,
+            description=description,
+            registered_user_id=user.id)
         print(newItem)
         session.add(newItem)
         flash('New Item {} Successfully Created'.format(newItem.item_name))
@@ -394,14 +543,15 @@ def newItem():
 @app.route('/catalog/<string:item>/edit', methods=['GET', 'POST'])
 def editedItem(item):
     if 'username' not in login_session:
+        # check if the user is logged in
         print('you are not login')
         return redirect(url_for('showTop'))
     else:
         print('you are logged in')
-    print("item = {}".format(item))
+
     editedItem = session.query(Items.item_name, Items.description,
                                Items.category_id, Items.id).filter(
-                               Items.item_name == item).first()
+        Items.item_name == item).first()
     if editedItem == None:
         print("NO such an item is registered")
     else:
@@ -411,6 +561,36 @@ def editedItem(item):
         category_list = session.query(Category.category_name).all()
         if request.method == 'POST':
             print("POST")
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            # check whether the user is the auther of the item
+            ####################################################################
+            item_before = item
+            print("item = {}".format(item_before))
+
+            print(login_session['username'])
+            user = session.query(
+                User).filter(User.username == login_session['username']).first()
+            print(user.id)
+            # create user data who is log in.
+
+            itemsObj = session.query(Items).filter(
+                Items.registered_user_id == user.id,
+                Items.item_name == item_before).all()
+            print(itemsObj)
+            print(type(itemsObj))
+            # create targeted item data that author is the user.
+
+            if itemsObj == []:
+                # check if the targeted item author is not the user
+                print('0000000000000000000000000000000000000000000000000000000')
+                error_msg = 'You are not allowed to edit the item "{}",\
+                    because you are not the owner of the item'.format(
+                    item_before)
+                print(error_msg)
+                # setting error postmessage
+                return render_template('edit_item_error.html',
+                                       error_msg=error_msg)
+            # if the targeted item author is the user
             # if request.form['item_name'] & request.form['description']:
             if request.form['item_name']:
                 item_name = request.form['item_name']
@@ -465,12 +645,30 @@ def deleteItem(item):
         return redirect(url_for('showTop'))
     else:
         print('you are login')
-    itemsToDelete = session.query(Items).filter(Items.item_name == item).one()
+
     if request.method == 'POST':
-        session.delete(itemsToDelete)
-        session.commit()
-        return redirect(url_for('showTop'))
+        user = session.query(
+            User).filter(
+            User.username == login_session['username']).first()
+        if user == None:
+            return redirect(url_for('showTop'))
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        itemsToDelete = session.query(
+            Items).filter(Items.item_name == item,
+                          Items.registered_user_id == user.id).first()
+        if itemsToDelete == None:
+            error_msg = 'the item "{}", you would like to delte is not owned\
+            by you.'.format(item)
+            return render_template('deleteItem_error.html',
+                                   items=itemsToDelete,
+                                   error_msg=error_msg)
+        else:
+            session.delete(itemsToDelete)
+            session.commit()
+            return redirect(url_for('showTop'))
     else:
+        itemsToDelete = session.query(
+            Items).filter(Items.item_name == item).one()
         return render_template('deleteItem.html', items=itemsToDelete)
 
 
@@ -491,7 +689,7 @@ def showItem(category, item):
 
 # authorization processes
 CLIENT_ID = json.loads(
-    open('/home/grader/catalog/catalog/client_secrets.json', 'r').read())['web']['client_id']
+    open('client_secrets.json', 'r').read())['web']['client_id']
 print(CLIENT_ID)
 
 
@@ -524,7 +722,7 @@ def login(provider):
         try:
             # Upgrade the authorization code into a credentials object
             oauth_flow = flow_from_clientsecrets(
-                '/home/grader/catalog/catalog/client_secrets.json', scope='')
+                'client_secrets.json', scope='')
             oauth_flow.redirect_uri = 'postmessage'
             credentials = oauth_flow.step2_exchange(auth_code)
         except FlowExchangeError:
@@ -679,4 +877,4 @@ def new_user():
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=5000)

@@ -6,9 +6,9 @@ You are currently login.
 </form>
 
 <h1>Categories</h1>
-<div class="">
+<div class="menu_category">
 <a href ="{{url_for('newCategory')}}">add new category</a>
-<div>
+</div>
 {% for category in category_list %}
 <li><a href="/catalog/{{category.category_name}}/items">{{category.category_name}}</a>
   <a href = "/category/{{category.category_name}}/edit">edit</a>
@@ -17,9 +17,11 @@ You are currently login.
 {% endfor %}
 
 <h1>{{category}} Items ({{num_items}} Items)</h1>
+<div class = "menu_item">
 <a href="{{url_for('newItem')}}">add new item</a>
+</div>
 {% for item in items %}
-<li><a href="/catalog/{{item.category_name}}/{{item.Items.item_name}}">{{item.Items.item_name}}</a></li>
+<li><a href="/catalog/{{category.category_name}}/{{item.item_name}}">{{item.item_name}}</a></li>
 {% endfor %}
 
 {% endblock %}

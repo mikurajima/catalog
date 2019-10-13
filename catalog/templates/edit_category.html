@@ -6,13 +6,13 @@ You are currently login.
 </form>
 
 <h1>Changing the Category Name</h1>
-<div class="">
+<div class="menu_category">
 <a href ="{{url_for('newCategory')}}">add new category</a>
-<div>
+</div>
 What would you like to change the category name <font color ="red" size = "12">{{category_name}}</font> to?<br>
 Please enter the new category name.<br>
 <form action="/category/{{category_name}}/edit" method="POST">
-<input type="text" name="new_category_name" value="place new cateogry here" />
+<input type="text" name="new_category_name" placeholder="place new cateogry here" required />
 <input type="submit" name="buttonName" value="submit">
 </form>
 *Remember when you change the category name, it works to all items immediately.<br>

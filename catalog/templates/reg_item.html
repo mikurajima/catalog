@@ -10,8 +10,9 @@ You are currently login.
 <h3>Please enter new item</h3>
 <h4>caution: You cannot register the item that already exists</h4>
 <form action="/item/new" method="POST">
-<input type="text" name="item_name" value="place new item here" />
-<input type="text" name="description" value="place item's description here" />
+<input type="text" name="item_name" placeholder="place new item here" required /><br>
+{#<input type="text" name="description" value="place item's description here" />#}
+<input type="text" name="description" placeholder="place item's description here" required/>
 <h3>Please select categories</h3>
 <select name="category">
 {% for category_name in category_names %}

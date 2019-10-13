@@ -10,19 +10,12 @@ You are currently login.
 <h3>Please enter new category</h3>
 <h4>caution: You cannot register the cagegory that already exists</h4>
 <form action="/category/new" method="POST">
-<input type="text" name="category_name" value="place new cateogry here" />
+<input type="text" name="category_name" placeholder="place new cateogry here" required />
 <input type="submit" name="buttonName" value="submit">
 </form>
 <h3>The list of currently registered categories</h3>
-{#
-{% if type(category_names) == String %}
-<li>{{category_names}}</li>
-{% else %}
-#}
 {% for category_name in category_names %}
-<li>{{category_name.category_name}}</li>
+<li><a href="/catalog/{{category_name.category_name}}/items">{{category_name.category_name}}</li>
 {% endfor %}
-{#
-{% endif %}
-#}
+
 {% endblock %}
